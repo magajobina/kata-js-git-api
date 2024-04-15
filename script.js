@@ -27,6 +27,12 @@ const debouncedInputHandler = debounce(inputHandler, 300);
 
 input.addEventListener('input', debouncedInputHandler)
 
+cardsContainer.addEventListener('click', function (e) {
+  if (e.target && e.target.classList.contains('delete-card')) {
+    e.target.parentElement.remove()
+    saveLocalStorageCards()
+  }
+})
 
 function inputHandler(e) {
   const searchQuery = input.value; 
@@ -107,15 +113,8 @@ function renderCard(repo) {
   </div>`;
 
   cardsContainer.insertAdjacentHTML('afterbegin', card)
-
-  cardsContainer.addEventListener('click', function (e) {
-    if (e.target && e.target.classList.contains('delete-card')) {
-      e.target.parentElement.remove()
-    }
-  })
+  saveLocalStorageCards()
 }
-
-
 
 function clearSelect() {
   formSelect.querySelectorAll('option').forEach(item => {
@@ -130,3 +129,18 @@ function closeSelect() {
   input.classList.remove('form-control--active')
   formSelect.size = 1
 }
+function saveLocalStorageCards() {
+  const stringedCards = JSON.stringify(cardsContainer.innerHTML)
+  localStorage.setItem('cardsHTML', stringedCards);
+}
+
+function init() {
+  // восстанавливаем карточки из local storage
+
+  if (localStorage.getItem('cardsHTML')) {
+    let cards = JSON.parse(localStorage.getItem('cardsHTML'))
+    cardsContainer.insertAdjacentHTML('afterbegin', cards)
+  }
+
+}
+init()
