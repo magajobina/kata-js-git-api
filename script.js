@@ -4,9 +4,7 @@ const cardsContainer = document.querySelector('#cards-container');
 
 async function getGitRepos(searchQuery) {
   const url = `https://api.github.com/search/repositories?q=${searchQuery}`;
-  if (!input.value) {
-    throw new Error('Тута пусто')
-  }
+
   let response = await fetch(url);
   let data = await response.json()
     
@@ -41,13 +39,22 @@ function inputHandler(e) {
     return
   }
   getGitRepos(searchQuery).then(arr => {
-    arr.forEach((repo, i) => {
-      if (i >= 5) return
 
-      firstFiveRepos.push(repo);
+    if (arr.length != 0) {
 
-    });
-    renderSelect(firstFiveRepos);
+      arr.forEach((repo, i) => {
+        if (i >= 5) return
+  
+        firstFiveRepos.push(repo);
+  
+      });
+
+      renderSelect(firstFiveRepos)
+    } else {
+      closeSelect();
+      clearSelect();
+    }
+
   })
   
 }
